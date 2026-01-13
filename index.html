@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor ID Card Advokat</title>
+    <style>
+        :root {
+            --primary-color: #1a1a1a;
+            --accent-color: #d4af37;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .instruction {
+            background: #d4af37;
+            color: #1a1a1a;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .id-card {
+            width: 320px;
+            height: 500px;
+            background-color: white;
+            border-radius: 0px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #ddd;
+
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: var(--accent-color);
+            padding: 15px 10px;
+            text-align: center;
+            border-bottom: 4px solid var(--accent-color);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            font-size: 10px;
+            color: var(--text-light);
+        }
+
+        /* Area Foto Khusus - Sekarang hanya terbatas di kotak foto */
+        .photo-container {
+            width: 110px;
+            height: 140px;
+            margin: 15px auto 10px;
+            border: 3px solid var(--accent-color);
+            background-color: #e0e0e0;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .photo-container:hover::after {
+            content: "UPLOAD";
+            position: absolute;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Teks Nama & NIA (Sekarang di luar area klik foto) */
+        .name-tag {
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        /* Editable Fields Style */
+        [contenteditable="true"] {
+            outline: none;
+            border-radius: 2px;
+        }
+
+        [contenteditable="true"]:hover {
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        [contenteditable="true"]:focus {
+            background: rgba(212, 175, 55, 0.15);
+        }
+
+        .details {
+            padding: 15px 20px;
+            font-size: 11px;
+            color: var(--text-dark);
+        }
+
+        .detail-item {
+            margin-bottom: 6px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 2px;
+            border-left: 2px solid #d4af37;
+            padding-left: 10px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #777;
+            text-transform: uppercase;
+            display: block;
+            font-size: 8px;
+        }
+
+        .value {
+            font-size: 11px;
+            font-weight: 600;
+            min-height: 14px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 75px;
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-sizing: border-box;
+            border-top: 3px solid var(--accent-color);
+        }
+
+        .footer-qr {
+            width: 45px;
+            height: 45px;
+            background: white;
+            padding: 3px;
+            border-radius: 4px;
+        }
+
+        .footer-qr img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .address {
+            font-size: 8px;
+            flex: 1;
+            padding: 0 10px;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .footer-logo-custom {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .footer-logo-custom img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 60px;
+            color: rgba(212, 175, 55, 0.05);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 1;
+
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        @media print {
+            @page {
+                size: 332px 510px;
+                margin: 0;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                background: none !important;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 20px
+            }
+
+            body>div:first-child {
+                display: none;
+            }
+
+            .card-frame {
+                box-shadow: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="instruction">💡 Klik kotak foto untuk ganti gambar | Klik teks untuk edit data</div>
+
+    <div class="id-card">
+        <div class="watermark">JUSTITIA</div>
+
+        <div class="header">
+            <h1 contenteditable="true">Lisensi Advokat</h1>
+            <p contenteditable="true">Pengadilan Kota Indopride</p>
+        </div>
+
+        <div class="photo-container" onclick="document.getElementById('fileInput').click()">
+            <img id="preview">
+        </div>
+        <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)">
+
+        <div class="name-tag">
+            <div contenteditable="true"
+                style="font-weight: bold; font-size: 13px; color: #1a1a1a; text-transform: uppercase;">
+                NAMA LENGKAP ADVOKAT
+            </div>
+            <div contenteditable="true" style="font-size: 10px; color: var(--accent-color); font-weight: bold;">
+                NIA: 2026.PI.001.XXXX
+            </div>
+        </div>
+
+        <div class="details">
+            <div class="detail-item">
+                <span class="label">Tempat / Tgl Lahir</span>
+                <span class="value" contenteditable="true">Indopride, 17 Agustus 1990</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Firma Hukum / Instansi</span>
+                <span class="value" contenteditable="true">Indopride Justice Associates</span>
+            </div>
+            <div class="detail-item">
+                <span class="label">Masa Berlaku</span>
+                <span class="value" contenteditable="true">13 JANUARI 2028</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-qr">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data= https://indopridecourt.xyz/"
+                    alt="QR">
+            </div>
+
+            <div class="address" contenteditable="true">
+                Jl. Occupation Avenue, Kota Indopride – 7239<br>
+                <i>"Fiat Justitia Ruat Caelum"</i>
+            </div>
+
+            <div class="footer-logo-custom">
+                <img src="logo.png" alt="Logo">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('preview');
+                output.src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+
+</body>
+
+</html>
