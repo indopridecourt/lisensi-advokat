@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lisensi Advokat IDP</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --primary-color: #1a1a1a;
@@ -22,6 +23,7 @@
             min-height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
+            padding: 20px;
         }
 
         .instruction {
@@ -33,6 +35,34 @@
             font-weight: bold;
             font-size: 14px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Menu Download */
+        .download-menu {
+            margin-top: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-download {
+            background-color: #1a1a1a;
+            color: #d4af37;
+            border: 2px solid #d4af37;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-download:hover {
+            background-color: #d4af37;
+            color: #1a1a1a;
         }
 
         .id-card {
@@ -44,7 +74,6 @@
             overflow: hidden;
             position: relative;
             border: 1px solid #ddd;
-
         }
 
         .header {
@@ -68,7 +97,6 @@
             color: var(--text-light);
         }
 
-        /* Area Foto Khusus - Sekarang hanya terbatas di kotak foto */
         .photo-container {
             width: 110px;
             height: 140px;
@@ -99,13 +127,11 @@
             object-fit: cover;
         }
 
-        /* Teks Nama & NIA (Sekarang di luar area klik foto) */
         .name-tag {
             text-align: center;
             padding: 0 10px;
         }
 
-        /* Editable Fields Style */
         [contenteditable="true"] {
             outline: none;
             border-radius: 2px;
@@ -113,10 +139,6 @@
 
         [contenteditable="true"]:hover {
             background: rgba(212, 175, 55, 0.1);
-        }
-
-        [contenteditable="true"]:focus {
-            background: rgba(212, 175, 55, 0.15);
         }
 
         .details {
@@ -206,8 +228,6 @@
             color: rgba(212, 175, 55, 0.05);
             pointer-events: none;
             z-index: 0;
-            opacity: 1;
-
         }
 
         #fileInput {
@@ -215,27 +235,8 @@
         }
 
         @media print {
-            @page {
-                size: 332px 510px;
-                margin: 0;
-            }
-
-            body {
-                margin: 0;
-                padding: 0;
-                background: none !important;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                border-radius: 20px
-            }
-
-            body>div:first-child {
+            .instruction, .download-menu {
                 display: none;
-            }
-
-            .card-frame {
-                box-shadow: none !important;
             }
         }
     </style>
@@ -243,64 +244,74 @@
 
 <body>
 
-    <div class="instruction">💡 Klik kotak foto untuk ganti gambar | Klik teks untuk edit data</div>
+    <div class="instruction">💡 Klik foto untuk ganti gambar | Klik teks untuk edit data</div>
 
-    <div class="id-card">
-        <div class="watermark">JUSTITIA</div>
+    <div id="capture-area">
+        <div class="id-card" id="my-card">
+            <div class="watermark">JUSTITIA</div>
 
-        <div class="header">
-            <h1 contenteditable="true">Lisensi Advokat</h1>
-            <p contenteditable="true">Pengadilan Kota Indopride</p>
-        </div>
-
-        <div class="photo-container" onclick="document.getElementById('fileInput').click()">
-            <img id="preview">
-        </div>
-        <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)">
-
-        <div class="name-tag">
-            <div contenteditable="true"
-                style="font-weight: bold; font-size: 13px; color: #1a1a1a; text-transform: uppercase;">
-                NAMA LENGKAP ADVOKAT
-            </div>
-            <div contenteditable="true" style="font-size: 10px; color: var(--accent-color); font-weight: bold;">
-                NIA: 2026.PI.bulan romawi.no urut
-            </div>
-        </div>
-
-        <div class="details">
-            <div class="detail-item">
-                <span class="label">Tempat / Tgl Lahir</span>
-                <span class="value" contenteditable="true">Indopride, 17 Agustus 1990</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">Firma Hukum / Instansi</span>
-                <span class="value" contenteditable="true">Indopride Justice Associates</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">Masa Berlaku</span>
-                <span class="value" contenteditable="true">13 JANUARI 2028</span>
-            </div>
-        </div>
-
-        <div class="footer">
-            <div class="footer-qr">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data= https://indopridecourt.xyz/"
-                    alt="QR">
+            <div class="header">
+                <h1 contenteditable="true">Lisensi Advokat</h1>
+                <p contenteditable="true">Pengadilan Kota Indopride</p>
             </div>
 
-            <div class="address" contenteditable="true">
-                Jl. Occupation Avenue, Kota Indopride – 7239<br>
-                <i>"Fiat Justitia Ruat Caelum"</i>
+            <div class="photo-container" onclick="document.getElementById('fileInput').click()">
+                <img id="preview" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=">
+            </div>
+            <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)">
+
+            <div class="name-tag">
+                <div contenteditable="true" style="font-weight: bold; font-size: 13px; color: #1a1a1a; text-transform: uppercase;">
+                    NAMA LENGKAP ADVOKAT
+                </div>
+                <div contenteditable="true" style="font-size: 10px; color: var(--accent-color); font-weight: bold;">
+                    NIA: 2026.PI.Bulan.No
+                </div>
             </div>
 
-            <div class="footer-logo-custom">
-                <img src="logo.png" alt="Logo">
+            <div class="details">
+                <div class="detail-item">
+                    <span class="label">Tempat / Tgl Lahir</span>
+                    <span class="value" contenteditable="true">Indopride, 17 Agustus 1990</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Firma Hukum / Instansi</span>
+                    <span class="value" contenteditable="true">Indopride Justice Associates</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Masa Berlaku</span>
+                    <span class="value" contenteditable="true">13 JANUARI 2028</span>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="footer-qr">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=https://indopridecourt.xyz/" alt="QR">
+                </div>
+
+                <div class="address" contenteditable="true">
+                    Jl. Occupation Avenue, Kota Indopride – 7239<br>
+                    <i>"Fiat Justitia Ruat Caelum"</i>
+                </div>
+
+                <div class="footer-logo-custom">
+                    <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+                </div>
             </div>
         </div>
     </div>
 
+    <div class="download-menu">
+        <button class="btn-download" onclick="downloadIDCard()">
+            📥 Download Gambar (PNG)
+        </button>
+        <button class="btn-download" onclick="window.print()" style="border-color: #777; color: #333; background: white;">
+            🖨️ Cetak PDF
+        </button>
+    </div>
+
     <script>
+        // Fungsi Preview Foto
         function previewImage(event) {
             var reader = new FileReader();
             reader.onload = function () {
@@ -309,10 +320,30 @@
             }
             reader.readAsDataURL(event.target.files[0]);
         }
+
+        // Fungsi Download ke Gambar
+        function downloadIDCard() {
+            const card = document.getElementById('my-card');
+            
+            // Memberikan sedikit feedback visual
+            const btn = document.querySelector('.btn-download');
+            btn.innerText = "⏳ Memproses...";
+            
+            html2canvas(card, {
+                scale: 2, // Meningkatkan resolusi gambar (HD)
+                useCORS: true, // Izinkan pengambilan gambar dari domain luar (seperti QR)
+                backgroundColor: null // Background transparan di luar radius
+            }).then(canvas => {
+                // Buat link download
+                const link = document.createElement('a');
+                link.download = 'Lisensi-Advokat-IDP.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                
+                btn.innerText = "📥 Download Gambar (PNG)";
+            });
+        }
     </script>
 
 </body>
-
-
 </html>
-
